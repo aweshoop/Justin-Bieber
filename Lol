@@ -1,0 +1,169 @@
+-- 🌟 Yim's Universal Hub (Rayfield Edition)
+-- Made by ChatGPT for Yim 😎
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "Yim's Universal Hub",
+    LoadingTitle = "Yim's Universal Hub",
+    LoadingSubtitle = "Made by ChatGPT 😎",
+    ConfigurationSaving = {Enabled = false}
+})
+
+local Player = game:GetService("Players").LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- // === VARIABLES === \\ --
+local speedEnabled = false
+local jumpEnabled = false
+local flyEnabled = false
+local speedValue = 100
+local jumpValue = 50
+local flySpeed = 100
+local flyVelocity
+local flyLoop
+
+-- // === TABS === \\ --
+local ScriptsTab = Window:CreateTab("Scripts")
+local MoreTab = Window:CreateTab("More")
+
+-- // === SCRIPTS TAB CONTENT === \\ --
+
+-- Steal a Brainrot
+ScriptsTab:CreateButton({
+    Name = "Steal a Brainrot 🧠",
+    Callback = function()
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/c4281c3937ebd537cb9e860182e41141.lua"))()
+    end,
+})
+
+-- Evade Reviver
+ScriptsTab:CreateButton({
+    Name = "Evade Reviver",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Evade-Immortality-50945"))()
+    end,
+})
+
+-- // === MORE TAB CONTENT === \\ --
+MoreTab:CreateParagraph({Title = "⚠️ Disclaimer", Content = "Speed, Jump, and Fly can be set up to 1000 max. Going higher may break your character."})
+
+-- === SPEED SETTINGS (Looping) ===
+MoreTab:CreateToggle({
+    Name = "Custom Speed (On/Off)",
+    CurrentValue = false,
+    Callback = function(Value)
+        speedEnabled = Value
+        if speedEnabled then
+            task.spawn(function()
+                while speedEnabled do
+                    local char = Player.Character
+                    if char and char:FindFirstChildOfClass("Humanoid") then
+                        char:FindFirstChildOfClass("Humanoid").WalkSpeed = speedValue
+                    end
+                    task.wait(0.1)
+                end
+            end)
+        else
+            local char = Player.Character
+            if char and char:FindFirstChildOfClass("Humanoid") then
+                char:FindFirstChildOfClass("Humanoid").WalkSpeed = 16
+            end
+        end
+    end
+})
+
+MoreTab:CreateSlider({
+    Name = "Set Speed",
+    Range = {16, 1000},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 100,
+    Callback = function(Value)
+        speedValue = Value
+    end
+})
+
+-- === JUMP POWER SETTINGS (Looping) ===
+MoreTab:CreateToggle({
+    Name = "Jump Power (On/Off)",
+    CurrentValue = false,
+    Callback = function(Value)
+        jumpEnabled = Value
+        task.spawn(function()
+            while jumpEnabled do
+                local char = Player.Character
+                if char and char:FindFirstChildOfClass("Humanoid") then
+                    char:FindFirstChildOfClass("Humanoid").UseJumpPower = true
+                    char:FindFirstChildOfClass("Humanoid").JumpPower = jumpValue
+                end
+                task.wait(0.1)
+            end
+            -- Reset to default
+            local char = Player.Character
+            if char and char:FindFirstChildOfClass("Humanoid") then
+                char:FindFirstChildOfClass("Humanoid").JumpPower = 50
+            end
+        end)
+    end
+})
+
+MoreTab:CreateSlider({
+    Name = "Set Jump Power",
+    Range = {50, 1000},
+    Increment = 10,
+    Suffix = "Power",
+    CurrentValue = 50,
+    Callback = function(Value)
+        jumpValue = Value
+    end
+})
+
+-- === FLY TOGGLE ===
+MoreTab:CreateToggle({
+    Name = "Fly (Broken)",
+    CurrentValue = false,
+    Callback = function(Value)
+        flyEnabled = Value
+        local char = Player.Character or Player.CharacterAdded:Wait()
+        local root = char:WaitForChild("HumanoidRootPart")
+
+        if flyEnabled then
+            flyVelocity = Instance.new("BodyVelocity")
+            flyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
+            flyVelocity.Velocity = Vector3.zero
+            flyVelocity.P = 1e4
+            flyVelocity.Parent = root
+
+            flyLoop = RunService.RenderStepped:Connect(function()
+                if not flyEnabled or not root then return end
+                local moveDir = Vector3.zero
+                local cam = workspace.CurrentCamera
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveDir += cam.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveDir -= cam.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveDir -= cam.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveDir += cam.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveDir += Vector3.new(0,1,0) end
+                if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then moveDir -= Vector3.new(0,1,0) end
+
+                if moveDir.Magnitude > 0 then
+                    flyVelocity.Velocity = moveDir.Unit * flySpeed
+                else
+                    flyVelocity.Velocity = Vector3.zero
+                end
+            end)
+        else
+            if flyVelocity then flyVelocity:Destroy() flyVelocity = nil end
+            if flyLoop then flyLoop:Disconnect() flyLoop = nil end
+        end
+    end
+})
+
+-- === DESTROY UI ===
+MoreTab:CreateButton({
+    Name = "Destroy UI ❌",
+    Callback = function()
+        Rayfield:Destroy()
+    end,
+})
