@@ -26,6 +26,7 @@ local flyLoop
 
 -- // === TABS === \\ --
 local ScriptsTab = Window:CreateTab("Scripts")
+local TrollTab = Window:CreateTab("Troll")
 local MoreTab = Window:CreateTab("More")
 
 -- // === SCRIPTS TAB CONTENT === \\ --
@@ -46,8 +47,22 @@ ScriptsTab:CreateButton({
     end,
 })
 
+-- // === TROLL TAB CONTENT === \\ --
+TrollTab:CreateButton({
+    Name = "Fling GUI 💥",
+    Callback = function()
+        task.spawn(function()
+            task.wait(0.5) -- ✅ clean delay fix for Rayfield interference
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/Immilu/3feb661b43d4ea7e8e7876e48e148d07/raw/Flinggui.lua"))()
+        end)
+    end,
+})
+
 -- // === MORE TAB CONTENT === \\ --
-MoreTab:CreateParagraph({Title = "⚠️ Disclaimer", Content = "Speed, Jump, and Fly can be set up to 1000 max. Going higher may break your character."})
+MoreTab:CreateParagraph({
+    Title = "⚠️ Disclaimer",
+    Content = "Speed, Jump, and Fly can be set up to 1000 max. Going higher may break your character."
+})
 
 -- === SPEED SETTINGS (Looping) ===
 MoreTab:CreateToggle({
