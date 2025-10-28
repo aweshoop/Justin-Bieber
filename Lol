@@ -29,34 +29,34 @@ local ScriptsTab = Window:CreateTab("Scripts")
 local TrollTab = Window:CreateTab("Troll")
 local MoreTab = Window:CreateTab("More")
 
+-- // === HELPER FUNCTION TO ADD "SCRIPT LOADED" NOTIFICATION === \\ --
+local function CreateScriptButton(tab, name, url)
+    tab:CreateButton({
+        Name = name,
+        Callback = function()
+            task.spawn(function()
+                task.wait(0.5)
+                -- Only show notification if not in More tab
+                if tab ~= MoreTab then
+                    print("Script Loaded!")
+                    Rayfield:Notify({
+                        Title = "✅ Script Loaded!",
+                        Content = name .. " has been executed successfully!",
+                        Duration = 4
+                    })
+                end
+                loadstring(game:HttpGet(url))()
+            end)
+        end,
+    })
+end
+
 -- // === SCRIPTS TAB CONTENT === \\ --
-
--- Steal a Brainrot
-ScriptsTab:CreateButton({
-    Name = "Steal a Brainrot 🧠",
-    Callback = function()
-        loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/c4281c3937ebd537cb9e860182e41141.lua"))()
-    end,
-})
-
--- Evade Reviver
-ScriptsTab:CreateButton({
-    Name = "Evade Reviver",
-    Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Evade-Immortality-50945"))()
-    end,
-})
+CreateScriptButton(ScriptsTab, "Steal a Brainrot 🧠", "https://api.luarmor.net/files/v3/loaders/c4281c3937ebd537cb9e860182e41141.lua")
+CreateScriptButton(ScriptsTab, "Evade Reviver", "https://rawscripts.net/raw/Evade-Immortality-50945")
 
 -- // === TROLL TAB CONTENT === \\ --
-TrollTab:CreateButton({
-    Name = "Fling GUI 💥",
-    Callback = function()
-        task.spawn(function()
-            task.wait(0.5) -- ✅ clean delay fix for Rayfield interference
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/Immilu/3feb661b43d4ea7e8e7876e48e148d07/raw/Flinggui.lua"))()
-        end)
-    end,
-})
+CreateScriptButton(TrollTab, "Fling GUI 💥", "https://gist.githubusercontent.com/Immilu/3feb661b43d4ea7e8e7876e48e148d07/raw/Flinggui.lua")
 
 -- // === MORE TAB CONTENT === \\ --
 MoreTab:CreateParagraph({
