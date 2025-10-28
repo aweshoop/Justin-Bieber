@@ -57,6 +57,7 @@ CreateScriptButton(ScriptsTab, "Brookhaven", "https://raw.githubusercontent.com/
 
 -- // === TROLL TAB CONTENT === \\ --
 CreateScriptButton(TrollTab, "Fling GUI 💥", "https://gist.githubusercontent.com/Immilu/3feb661b43d4ea7e8e7876e48e148d07/raw/Flinggui.lua")
+CreateScriptButton(TrollTab, "Blackhole", "https://pastefy.app/QH9EnqU3/raw")
 
 -- // === MORE TAB CONTENT === \\ --
 MoreTab:CreateParagraph({
